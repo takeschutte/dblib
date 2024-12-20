@@ -640,10 +640,10 @@ Qed.
    meta-variable. *)
 
 Ltac plus_0_r :=
-  repeat match goal with |- context[?x + 0] => rewrite (plus_0_r x) end.
+  repeat match goal with |- context[?x + 0] => rewrite (Nat.add_0_r x) end.
 
 Ltac plus_0_r_in h :=
-  repeat match type of h with context[?x + 0] => rewrite (plus_0_r x) in h end.
+  repeat match type of h with context[?x + 0] => rewrite (Nat.add_0_r x) in h end.
 
 (* It is worth noting that instead of writing:
      traverse (fun l x => var (lift w (l + k) x)) 0 t
@@ -673,11 +673,11 @@ Qed.
 
 Ltac recognize_lift :=
   rewrite recognize_lift by eauto with typeclass_instances;
-  repeat rewrite plus_0_l. (* useful when [k1] is zero *)
+  repeat rewrite Nat.add_0_l. (* useful when [k1] is zero *)
 
 Ltac recognize_lift_in h :=
   rewrite recognize_lift in h by eauto with typeclass_instances;
-  repeat rewrite plus_0_l in h. (* useful when [k1] is zero *)
+  repeat rewrite Nat.add_0_l in h. (* useful when [k1] is zero *)
 
 (* The tactic [simpl_lift] is used to simplify an application of [lift] to a
    concrete term, such as [TApp t ...], where [TApp] is a user-defined
@@ -713,7 +713,7 @@ Ltac simpl_lift :=
     match type of _traverse with (nat -> nat -> ?V) -> nat -> ?T -> ?T =>
       repeat rewrite (@recognize_lift V _ T _ _) by eauto with typeclass_instances
     end;
-    repeat rewrite plus_0_l (* useful when [k1] is zero and we are at a leaf *)
+    repeat rewrite Nat.add_0_l (* useful when [k1] is zero and we are at a leaf *)
 
   (* Case: [_traverse] appears in a hypothesis. *)
   (* this binds the meta-variable [_traverse] to the user's [traverse_term] *)
@@ -728,7 +728,7 @@ Ltac simpl_lift :=
     match type of _traverse with (nat -> nat -> ?V) -> nat -> ?T -> ?T =>
       repeat rewrite (@recognize_lift V _ T _ _)  in h by eauto with typeclass_instances
     end;
-    repeat rewrite plus_0_l in h (* useful when [k1] is zero and we are at a leaf *)
+    repeat rewrite Nat.add_0_l in h (* useful when [k1] is zero and we are at a leaf *)
   
   end.
 
@@ -886,12 +886,12 @@ Qed.
 Ltac recognize_subst :=
   rewrite recognize_subst by eauto with typeclass_instances;
   try rewrite lift_zero; (* useful when [k1] is zero *)
-  repeat rewrite plus_0_l. (* useful when [k1] is zero *)
+  repeat rewrite Nat.add_0_l. (* useful when [k1] is zero *)
 
 Ltac recognize_subst_in h :=
   rewrite recognize_subst in h by eauto with typeclass_instances;
   try rewrite lift_zero in h; (* useful when [k1] is zero *)
-  repeat rewrite plus_0_l in h. (* useful when [k1] is zero *)
+  repeat rewrite Nat.add_0_l in h. (* useful when [k1] is zero *)
 
 (* This tactic is used to simplify an application of [subst] to a concrete
    term, such as [TApp t1 t2], where [TApp] is a user-defined constructor of
@@ -917,7 +917,7 @@ Ltac simpl_subst :=
     match type of _traverse with (nat -> nat -> ?V) -> nat -> ?T -> ?T =>
       repeat rewrite (@recognize_subst V _ _ T _ _ _ _ _) by eauto with typeclass_instances
     end;
-    repeat rewrite plus_0_l; (* useful when [k1] is zero and we are at a leaf *)
+    repeat rewrite Nat.add_0_l; (* useful when [k1] is zero and we are at a leaf *)
     repeat rewrite lift_zero (* useful when [k1] is zero and we are at a leaf *)
 
   (* Case: [_traverse] appears in a hypothesis. *)
@@ -933,7 +933,7 @@ Ltac simpl_subst :=
     match type of _traverse with (nat -> nat -> ?V) -> nat -> ?T -> ?T =>
       repeat rewrite (@recognize_subst V _ _ T _ _ _ _ _) in h by eauto with typeclass_instances
     end;
-    repeat rewrite plus_0_l in h; (* useful when [k1] is zero and we are at a leaf *)
+    repeat rewrite Nat.add_0_l in h; (* useful when [k1] is zero and we are at a leaf *)
     repeat rewrite lift_zero in h (* useful when [k1] is zero and we are at a leaf *)
   
   end.
@@ -1660,7 +1660,7 @@ Proof.
   intros.
   rewrite <- lift_lift_fuse_successor.
   rewrite lift_lift by lia.
-  rewrite plus_0_r.
+  rewrite Nat.add_0_r.
   apply subst_lift.
 Qed.
 
