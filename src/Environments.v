@@ -216,14 +216,14 @@ Lemma lookup_insert_old:
 (* Hence, [lookup x (insert y a e) = lookup (x - 1) e]. *)
 Proof.
   (* Induction over [x], which is non-zero. *)
-  induction x; intros; [ elimtype False; lia | replace (S x - 1) with x by lia ].
+  induction x; intros; [ exfalso; lia | replace (S x - 1) with x by lia ].
   - { (* Case analysis. *)
       destruct y; destruct e; simpl; try solve [ eauto ].
       - (* One troublesome case. *)
         rewrite lookup_empty_None. erewrite <- lookup_empty_None. intuition.
       - (* Another troublesome case. *)
         destruct x; intros;
-        [ elimtype False; lia | replace (S x - 1) with x in * by lia ].
+        [ exfalso; lia | replace (S x - 1) with x in * by lia ].
         simpl lookup at 2.
         intuition.
     }
@@ -323,7 +323,7 @@ Lemma insert_insert:
 Proof.
   intros ? k s. generalize s k; clear s k. induction s; intros.
   - (* Case [s = 0]. *)
-    destruct k; [ | elimtype False; lia ]. reflexivity.
+    destruct k; [ | exfalso; lia ]. reflexivity.
   - (* Case [s > 0]. *)
     { destruct k.
       - (* Sub-case [k = 0]. *)
@@ -457,8 +457,8 @@ Proof.
           generalize (IHx1 _ _ _ _ _ h xx); intros [ e [ y1 [ y2 [ ? [ ? [ ? ? ]]]]]]
         end.
         (* [e1] and [e2] must be non-nil. *)
-        { destruct e1; simpl tl in *; [ elimtype False; eauto using insert_nil | ].
-        - destruct e2; simpl tl in *; [ elimtype False; eauto using insert_nil | ].
+        { destruct e1; simpl tl in *; [ exfalso; eauto using insert_nil | ].
+        - destruct e2; simpl tl in *; [ exfalso; eauto using insert_nil | ].
         + exists (o :: e). exists (S y1). exists (S y2).
           split. simpl. congruence.
           split. simpl. congruence.
@@ -804,14 +804,14 @@ Lemma agree_empty_left:
   forall A (e : env A),
   agree (@empty _) e 0.
 Proof.
-  unfold agree. intros. elimtype False. lia.
+  unfold agree. intros. exfalso. lia.
 Qed.
 
 Lemma agree_empty_right:
   forall A (e : env A),
   agree e (@empty _) 0.
 Proof.
-  unfold agree. intros. elimtype False. lia.
+  unfold agree. intros. exfalso. lia.
 Qed.
 
 (* If two environments that agree up to [k] are extended with a new variable,
@@ -897,7 +897,7 @@ Section Subsume.
   Proof.
     intros. destruct o1.
     - eauto.
-    - elimtype False. eauto using osub_None_Some.
+    - exfalso. eauto using osub_None_Some.
   Qed.
 
   (* Then, it is extended pointwise to environments. *)
@@ -1002,7 +1002,7 @@ Section Subsume.
     (* Really painful. *)
     induction e1; simpl; intros.
     - (* Base. *)
-      elimtype False.
+      exfalso.
       match goal with h: subsume nil _ |- _ =>
         generalize (h x); clear h; intro h;
         rewrite lookup_insert_bingo in h by reflexivity;
